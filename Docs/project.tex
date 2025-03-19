@@ -23,6 +23,7 @@
 \maketitle
 \tableofcontents
 \newpage
+
 \section{Building Blocks}
 For our inference implementation, I am considering using Convolutional Neural Networks (CNNs). They are an algorithm used to recognize patterns in data. I believe the target data should be handwritten digits from 0--9. Neural networks are built using a collection of neurons organized into layers, each with their own weights and biases. The building blocks of CNNs are the following:
 \begin{itemize}
@@ -32,17 +33,40 @@ For our inference implementation, I am considering using Convolutional Neural Ne
   \item \textbf{Kernel Weights and Biases} -- unique to each neuron and are determined during the training phase of our network. We will train the model on a computer and extract the weights and biases to the FPGA for inference.
   \item \textbf{Differentiable Score Function} -- represented as class scores on the output layer.
 \end{itemize}
-These are the high-level components needed; let's go over what they mean and the equations associated with them.
+These are the high-level components needed. Using this knowledge, let’s go over the proposed design.
 
-\section{Convolutional Module Design: Neuron}
-Let's define some terms before we start:
+\section{Design}
+Our neural network is going to be as simple as possible because the emphasis of this project will be optimizing the operations required for the model to run. Hence, we are using the "Hello World" equivalent of Machine Learning. Our architecture is as follows. 
 
-\subsection{Background}
+\subsection{Architecture}
+Our design will take a \textbf{28×28 grayscale image} as input.
+
+After:
+\begin{itemize}
+  \item A \textbf{convolution layer} will be used to apply 8 kernels to the input, generating \textbf{8 feature maps of size 26×26}, which are then passed to a max-pooling layer.
+  \item A \textbf{max-pooling layer} will reduce the \textbf{spatial dimensions} of each feature map from \textbf{26×26 to 13×13}, maintaining 8 feature maps, and will pass the results to the softmax layer.
+  \item A \textbf{softmax layer} will process the \textbf{flattened feature maps} and produce \textbf{10 probability values}, each representing the likelihood of the image belonging to one of the 10 classes (digits 0–9).
+\end{itemize}
+
+Here is a visual representation of this process.
+
+\begin{figure}[H]
+  \begin{center}
+    \includegraphics[width=0.95\textwidth]{figures/arch_vis}
+  \end{center}
+  \caption{Visual representation of the CNN layers in our design}\label{fig:cnn_arch}
+\end{figure}
+
+\subsection{Model}
+A Python golden model has been created and should be used to validate the FPGA implementation. The Python model is not optimized for hardware, and operations should be adjusted for efficient computation on the FPGA. The model has been pre-trained in Python, and the trained weights and biases will be ported to the FPGA for inference. FPGA-specific design considerations will be discussed after detailing the theory behind each layer.
+
+\subsection{Convolutional Layer Design}
+\subsubsection{Background}
 \begin{itemize}
   \item \textbf{What is a feature?} \\
     A feature is an individual measurable property that a model uses to make a prediction or classification.
   \item \textbf{What is a feature map?} \\
-    A feature map is the output of all the prevalent features extracted using a filter. In this field, the 'filter' is referred to as a \emph{kernel}. Hence, I will be using "kernel" from this point forward.
+    A feature map is the output produced when a convolutional kernel extracts relevant features from an input. In this field, the 'filter' is referred to as a \emph{kernel}. Hence, I will be using "kernel" from this point forward.
   \item \textbf{What is convolution?} \\
     Convolution, in a mathematical sense, is an operation performed on two functions that produces a third function. The mathematical operation is defined as the integral of the two functions after one of them is reflected about the y-axis and shifted. Mathematically:
 \end{itemize}
@@ -57,37 +81,116 @@ Graphically:
   \begin{center}
     \includegraphics[width=0.5\textwidth]{figures/math_con}
   \end{center}
-  \caption{Convolution of two functions A (red) and B (blue) producing a third function describing the overlap (green)}\label{fig:}
+  \caption{Convolution of two functions A (red) and B (blue) producing a third function describing the overlap (green)}\label{fig:convolution}
 \end{figure}
 
-However, this is true for continuous cases. In our case, we are dealing with discrete systems, so the convolution of discrete systems is defined differently. The core definition remains the same; however, the mathematical operation is a summation instead of an integral, as shown:
+Since we are dealing with discrete systems, convolution is defined using summation instead of an integral:
+
 \begin{align*}
   \left( f * g \right) \left[ n \right] &= \sum_{m = -\infty}^{\infty} f \left[ m\right] g \left[ n-m \right]
 \end{align*}
 
-In practicality, since our system has a finite response, there exists a support. A support is defined as a range where our function is nonzero. Hence, the following equation can be rewritten as:
-\begin{align*}
-  \Aboxed{\left( f * g \right) \left[ n \right] &=  \sum_{m = -M }^{M} f \left[ n - m  \right]  g \left[ m \right]}
-\end{align*}
-
-where $g$ has a finite support in the set $ \left\{ -M, -M  + 1,  \dots, M-1, M \right\} $.
-
-In CNNs, the most computationally expensive operation is the convolution layer. It is used to extract image features. The convolution of the input feature map with the weight kernel results in a feature map of this layer after processing by the activation function \cite{xiao_fpga_2020}. The equation is given by:
+In CNNs, the most computationally expensive operation is the convolution layer. The convolution of the input feature map with the kernel results in an output feature map:
 
 \begin{align*}
   \Aboxed{  y'_j = f \left( \sum_{i \in M_j}^{} x^{l-1}_{i}  * k^l_{ij} + b^l_{j}\right)}
 \end{align*}
 
+Where:
 \begin{itemize}
-  \item $ y^{l}_j $ : Feature map of the $ j $th convolution kernel result of the $ l  $th layer.
-  \item $ M_{j} $ : Represents the selection of the previous input feature map by the current convolution.
-  \item $ x_{i }^{l-1} $: Represents the previous input feature map.
-  \item $ k_{ij}^l  $: Represents the $ i  $th weighting coefficient of the $ j  $th convolution of the $ l  $th layer.
-  \item $ b^{l }_j $ : Represents the bias parameter of the $ j  $th convolution kernel of the $ l  $th layer.
-  \item $ f $ : The nonlinear activation function.
+  \item \( y^{l}_j \) : Feature map of the \( j \)th convolution kernel result of the \( l  \)th layer.
+  \item \( M_{j} \) : Represents the selection of the previous input feature map by the current convolution.
+  \item \( x_{i }^{l-1} \): Represents the previous input feature map.
+  \item \( k_{ij}^l  \): Represents the \( i  \)th weighting coefficient of the \( j  \)th convolution of the \( l  \)th layer.
+  \item \( b^{l }_j \) : Represents the bias parameter of the \( j  \)th convolution kernel of the \( l  \)th layer.
+  \item \( f \) : The nonlinear activation function.
 \end{itemize}
 
-This formula defines a neuron in neural networks, specifically a convolution-based neuron used in CNNs. The weighting coefficients and biases come from the output of a trained model. We will use a pretrained model's weights and biases in our convolution calculations. The weights and biases are given in floating point representation and must be converted to fixed-point. The activation function will most likely be ReLU; however, it may change in the future. Looking at the required computation for each neuron, we can see that this is essentially a multiply-accumulate (MAC) operation. Using this knowledge, we can design a circuit to compute the convolution of each layer efficiently in hardware.
+\subsection{Pooling Layer Design}
+\subsubsection{Background}
+\begin{itemize}
+  \item \textbf{What is pooling?} \\
+    Pooling is a technique used to downsample feature maps by aggregating adjacent values.
+  \item \textbf{Why pooling?} \\
+    Neighboring pixels in images tend to have similar values, leading to redundant information. Pooling reduces this redundancy while retaining important features.
+  \item \textbf{How is pooling done?} \\
+    Pooling is implemented using a max, min, or average value comparison over a small region.
+\end{itemize}
+
+\subsection{Pooling Equation}
+A 3×3 convolution computes each output pixel using a weighted sum of a 3×3 region from the input:
+
+\begin{align*}
+  \Aboxed{ Y(i, j) &= \sum_{m=0}^{2} \sum_{n=0}^{2} X(i+m, j+n) \cdot W(m, n)}
+\end{align*}
+
+Where:
+\begin{itemize}
+  \item \( X(i, j) \) is the input feature map (28×28).
+  \item \( W(m, n) \) is the 3×3 convolution kernel (filter).
+  \item \( Y(i, j) \) is the output feature map after convolution.
+\end{itemize}
+
+Valid padding means no padding is added, so the output size is:
+
+\[
+(28-3+1) \times (28-3+1) = 26 \times 26
+\]
+And we repeat this 8 times because we have 8 kernels. Hence our final output will be 26 x 26 x 8.
+
+\subsection{Softmax Layer Design}
+\subsubsection{Background} 
+\begin{itemize}
+  \item \textbf{What is an activation function?}
+    An activation function allows our model to achieve non-linearity as most things in real life are not a linear equation. By doing so, it allows our model to achieve higher accuracies.
+  \item \textbf{What is Softmax?} 
+    Softmax is an activation function that converts an arbitrary set of numbers into a probability distribution. 
+  \item \textbf{Why Softmax?} 
+      Softmax is useful when you have a multi-class model as we do here, (0-9 are different classes). 
+\end{itemize}
+
+\subsection{Softmax Equation} 
+Mathematically, given an input vector \( x = [x_1, x_2, ..., x_n] \), the Softmax function is defined as:
+
+\begin{align*}
+  \Aboxed{s(x_i) = \frac{e^{x_i}}{\sum_{j=1}^{n} e^{x_j}}}
+\end{align*}
+where:
+\begin{itemize}
+    \item \( x_i \) represents the raw input (logit) for class \( i \).
+    \item \( e^{x_i} \) represents exponentiation of the input values.
+    \item The denominator is the \textbf{sum of exponential} over all input values.
+    \item The function ensures that all outputs sum to 1.
+\end{itemize}
+\subsubsection{Sample Calculation} 
+\begin{enumerate}
+    \item Compute exponential:
+    \[
+    e^{-1} = 0.368, \quad e^0 = 1, \quad e^3 = 20.09 \\
+    \quad e^5 = 148.41
+    \]
+
+    \item Compute denominator (sum of exponential):
+    \[
+    0.368 + 1 + 20.09 + 148.41 = 169.87
+    \]
+
+    \item Compute Softmax probabilities:
+    \begin{align*}
+      s(-1) &= \frac{0.368}{169.87} = 0.002\\ 
+      s(0) &= \frac{1}{169.87} = 0.006\\ 
+      s(3) &= \frac{20.09}{169.87} = 0.118\\ 
+      s(5) &= \frac{148.41}{169.87} = 0.874
+    \end{align*}
+\end{enumerate}
+
+Thus, the final probability distribution is:
+\[
+[0.002, 0.006, 0.118, 0.874]
+\]
+
+This means the model is \textbf{87.4\% confident in class 5} and assigns lower probabilities to other classes.
+
 
 
 

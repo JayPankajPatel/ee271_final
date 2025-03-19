@@ -1,4 +1,3 @@
-import numpy as np
 from conv import Conv3x3
 from max_pool import MaxPool2x2
 from softmax import Softmax

@@ -2,15 +2,16 @@ import numpy as np
 
 
 class Softmax:
-    def __init__(self, input_len, nodes):
+    def __init__(self, input_len, nodes, weights=None, biases=None):
         """
         Initializes the softmax layer.
         input_len: Number of inputs (flattened size of input feature map)
         nodes: Number of output nodes (classes)
         """
-        # Initialize weights with small values (to be replaced with trained model values)
-        self.weights = np.random.randn(input_len, nodes) / input_len
-        self.biases = np.zeros(nodes)
+        if weights == None or biases == None:
+            # Initialize weights with small values (to be replaced with trained model values)
+            self.weights = np.random.randn(input_len, nodes) / input_len
+            self.biases = np.zeros(nodes)
 
     def flatten_input(self, input):
         """
