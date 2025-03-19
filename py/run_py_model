@@ -1,0 +1,14 @@
+#!/bin/bash
+# Give activation script proper permissions
+chmod -u+x+r+w ./venv/bin/activate
+# Activate virtual environment
+source ./venv/bin/activate
+# Define Python path inside the virtual environment
+PYTHON_HOME="./venv/bin/python3.10"
+$PYTHON_HOME -m pip install -r ./requirements.txt
+
+# Run the CNN script
+$PYTHON_HOME ./cnn.py
+
+# (Optional) Deactivate virtual environment
+deactivate
