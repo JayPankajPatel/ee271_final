@@ -1,6 +1,7 @@
 from conv import Conv3x3
 from max_pool import MaxPool2x2
 from softmax import Softmax
+import numpy as np
 import tensorflow as tf
 
 conv = Conv3x3(8)
