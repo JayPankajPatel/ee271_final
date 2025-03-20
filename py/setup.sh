@@ -21,6 +21,9 @@ create_python_virtual_env(){
 }
 
 source ./uninstall.sh
+if [ -f '/apps/design_sources.sh' ]; then
+    source '/apps/design_sources.sh'
+fi
 install_pyenv
 install_python3.10.1
 set_python_version_locally
