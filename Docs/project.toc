@@ -1,14 +1,18 @@
 \contentsline {section}{\numberline {1}Building Blocks}{2}{section.1}%
 \contentsline {section}{\numberline {2}Design}{2}{section.2}%
 \contentsline {subsection}{\numberline {2.1}Architecture}{2}{subsection.2.1}%
-\contentsline {subsection}{\numberline {2.2}Model}{3}{subsection.2.2}%
-\contentsline {subsection}{\numberline {2.3}Convolutional Layer Design}{3}{subsection.2.3}%
-\contentsline {subsubsection}{\numberline {2.3.1}Background}{3}{subsubsection.2.3.1}%
-\contentsline {subsection}{\numberline {2.4}Equations}{3}{subsection.2.4}%
+\contentsline {subsection}{\numberline {2.2}Model}{4}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Convolutional Layer Design}{4}{subsection.2.3}%
+\contentsline {subsubsection}{\numberline {2.3.1}Background}{4}{subsubsection.2.3.1}%
+\contentsline {subsection}{\numberline {2.4}Equations}{4}{subsection.2.4}%
 \contentsline {subsection}{\numberline {2.5}Pooling Layer Design}{5}{subsection.2.5}%
 \contentsline {subsubsection}{\numberline {2.5.1}Background}{5}{subsubsection.2.5.1}%
-\contentsline {subsection}{\numberline {2.6}Pooling Equation}{5}{subsection.2.6}%
-\contentsline {subsection}{\numberline {2.7}Softmax Layer Design}{5}{subsection.2.7}%
-\contentsline {subsubsection}{\numberline {2.7.1}Background}{5}{subsubsection.2.7.1}%
+\contentsline {subsection}{\numberline {2.6}Pooling Equation}{6}{subsection.2.6}%
+\contentsline {subsection}{\numberline {2.7}Softmax Layer Design}{6}{subsection.2.7}%
+\contentsline {subsubsection}{\numberline {2.7.1}Background}{6}{subsubsection.2.7.1}%
 \contentsline {subsection}{\numberline {2.8}Softmax Equation}{6}{subsection.2.8}%
-\contentsline {subsubsection}{\numberline {2.8.1}Sample Calculation}{6}{subsubsection.2.8.1}%
+\contentsline {subsubsection}{\numberline {2.8.1}Sample Calculation}{7}{subsubsection.2.8.1}%
+\contentsline {subsection}{\numberline {2.9}Hardmax Layer Design}{7}{subsection.2.9}%
+\contentsline {subsubsection}{\numberline {2.9.1}Background}{7}{subsubsection.2.9.1}%
+\contentsline {subsection}{\numberline {2.10}Hardmax Equation}{8}{subsection.2.10}%
+\contentsline {subsubsection}{\numberline {2.10.1}Sample Calculation}{8}{subsubsection.2.10.1}%

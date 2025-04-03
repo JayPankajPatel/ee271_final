@@ -45,18 +45,24 @@ After:
 \begin{itemize}
   \item A \textbf{convolution layer} will be used to apply 8 kernels to the input, generating \textbf{8 feature maps of size 26×26}, which are then passed to a max-pooling layer.
   \item A \textbf{max-pooling layer} will reduce the \textbf{spatial dimensions} of each feature map from \textbf{26×26 to 13×13}, maintaining 8 feature maps, and will pass the results to the softmax layer.
-  \item A \textbf{softmax layer} will process the \textbf{flattened feature maps} and produce \textbf{10 probability values}, each representing the likelihood of the image belonging to one of the 10 classes (digits 0–9).
+  \item For training, a \textbf{softmax layer} will process the \textbf{flattened feature maps} and produce \textbf{10 probability values}, each representing the likelihood of the image belonging to one of the 10 classes (digits 0–9).
+  \item For the inference and implementation on hardware, a \textbf{hardmax layer} will be used as implementing softmax on hardware is resource intensive and will increase development time.
 \end{itemize}
 
-Here is a visual representation of this process.
-
+Here is a visual representation of these processes.
+\begin{figure}[H]
+  \begin{center}
+    \includegraphics[width=0.95\textwidth]{figures/arch_vis_training}
+  \end{center}
+  \caption{Visual representation of the CNN layers that will implemented as training in software}\label{fig:cnn_arch}
+\end{figure}
 \begin{figure}[H]
   \begin{center}
     \includegraphics[width=0.95\textwidth]{figures/arch_vis}
   \end{center}
-  \caption{Visual representation of the CNN layers in our design}\label{fig:cnn_arch}
+  \caption{Visual representation of the CNN layers that will implemented in hardware}\label{fig:cnn_arch}
 \end{figure}
-
+\newpage 
 \subsection{Model}
 A Python golden model has been created and should be used to validate the FPGA implementation. The Python model is not optimized for hardware, and operations should be adjusted for efficient computation on the FPGA. The model has been pre-trained in Python, and the trained weights and biases will be ported to the FPGA for inference. FPGA-specific design considerations will be discussed after detailing the theory behind each layer.
 
@@ -143,7 +149,7 @@ And we repeat this 8 times because we have 8 kernels. Hence our final output wil
 \begin{itemize}
   \item \textbf{What is an activation function?}
     An activation function allows our model to achieve non-linearity as most things in real life are not a linear equation. By doing so, it allows our model to achieve higher accuracies.
-  \item \textbf{What is Softmax?} 
+  \item \textbf{What is softmax?} 
     Softmax is an activation function that converts an arbitrary set of numbers into a probability distribution. 
   \item \textbf{Why Softmax?} 
       Softmax is useful when you have a multi-class model as we do here, (0-9 are different classes). 
@@ -159,18 +165,18 @@ where:
 \begin{itemize}
     \item \( x_i \) represents the raw input (logit) for class \( i \).
     \item \( e^{x_i} \) represents exponentiation of the input values.
-    \item The denominator is the \textbf{sum of exponential} over all input values.
+    \item The denominator is the \textbf{sum of exponentials} over all input values.
     \item The function ensures that all outputs sum to 1.
 \end{itemize}
 \subsubsection{Sample Calculation} 
 \begin{enumerate}
-    \item Compute exponential:
+    \item Compute exponentials:
     \[
     e^{-1} = 0.368, \quad e^0 = 1, \quad e^3 = 20.09 \\
     \quad e^5 = 148.41
     \]
 
-    \item Compute denominator (sum of exponential):
+    \item Compute denominator (sum of exponentials):
     \[
     0.368 + 1 + 20.09 + 148.41 = 169.87
     \]
@@ -190,6 +196,59 @@ Thus, the final probability distribution is:
 \]
 
 This means the model is \textbf{87.4\% confident in class 5} and assigns lower probabilities to other classes.
+
+\subsection{Hardmax Layer Design}
+\subsubsection{Background} 
+\begin{itemize}
+  \item \textbf{What is hardmax?}  
+    Hardmax is a function that converts a set of values into a one-hot encoded vector, where only the index with the highest value is set to 1 and all others are set to 0.
+  \item \textbf{Why Hardmax?}  
+    Hardmax is useful during inference when we want to make a final decision and select the most likely class. It is deterministic and discrete, which makes it appropriate for classification output.
+\end{itemize}
+
+\subsection{Hardmax Equation}
+Given an input vector \( x = [x_1, x_2, ..., x_n] \), the Hardmax function outputs a vector \( h = [h_1, h_2, ..., h_n] \), where:
+
+\[
+h_i =
+\begin{cases}
+1 & \text{if } i = \arg\max_j x_j \\
+0 & \text{otherwise}
+\end{cases}
+\]
+
+\noindent where:
+\begin{itemize}
+    \item \( x_i \) represents the raw input (logit) for class \( i \).
+    \item \( \arg\max_j x_j \) returns the index of the maximum value in the input vector.
+    \item The result is a one-hot vector with a 1 at the index of the largest value.
+\end{itemize}
+
+\subsubsection{Sample Calculation} 
+\begin{enumerate}
+    \item Input vector:
+    \[
+    x = [-1,\ 0,\ 3,\ 5]
+    \]
+
+    \item Find index of maximum value:
+    \[
+    \arg\max(x) = 3 \quad \text{(since } x_4 = 5 \text{ is largest)}
+    \]
+
+    \item Convert to one-hot encoding:
+    \[
+    h = [0,\ 0,\ 0,\ 1]
+    \]
+\end{enumerate}
+
+\noindent Thus, the final hardmax output is:
+\[
+[0,\ 0,\ 0,\ 1]
+\]
+
+\noindent This means the model predicts class 3 with full confidence and disregards the other classes completely.
+
 
 
 

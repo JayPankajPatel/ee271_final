@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.9.15)  19 MAR 2025 14:28
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.9.15)  3 APR 2025 11:28
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -284,7 +284,11 @@ Package: mhsetup 2021/03/18 v1.4 programming setup (MH)
 File: l3backend-pdftex.def 2024-05-08 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count301
 \l__pdf_internal_box=\box58
-) (./project.aux)
+) (./project.aux
+
+LaTeX Warning: Label `fig:cnn_arch' multiply defined.
+
+)
 \openout1 = `project.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 22.
@@ -345,58 +349,76 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 [1
 
 {/usr/local/texlive/2024/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-<figures/arch_vis.png, id=85, 364.38231pt x 102.88437pt>
-File: figures/arch_vis.png Graphic file (type png)
-<use figures/arch_vis.png>
-Package pdftex.def Info: figures/arch_vis.png  used on input line 55.
-(pdftex.def)             Requested size: 327.74895pt x 92.54169pt.
-
 
 [2{/usr/local/texlive/2024/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}]
-<figures/math_con.png, id=94, 221.35846pt x 136.00812pt>
-File: figures/math_con.png Graphic file (type png)
-<use figures/math_con.png>
-Package pdftex.def Info: figures/math_con.png  used on input line 82.
-(pdftex.def)             Requested size: 172.5pt x 105.99458pt.
+<figures/arch_vis_training.png, id=113, 363.87692pt x 106.3975pt>
+File: figures/arch_vis_training.png Graphic file (type png)
+<use figures/arch_vis_training.png>
+Package pdftex.def Info: figures/arch_vis_training.png  used on input line 55.
+(pdftex.def)             Requested size: 327.74895pt x 95.83316pt.
+<figures/arch_vis.png, id=114, 261.28384pt x 151.56625pt>
+File: figures/arch_vis.png Graphic file (type png)
+<use figures/arch_vis.png>
+Package pdftex.def Info: figures/arch_vis.png  used on input line 61.
+(pdftex.def)             Requested size: 327.74895pt x 190.12108pt.
 
 
 [3
 pdfTeX warning (ext4): destination with the same identifier (name{figure.1}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.86 
-      <./figures/arch_vis.png (PNG copy)>]
-
-[4
+l.65 \newpage
+             
 pdfTeX warning (ext4): destination with the same identifier (name{figure.2}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.114   \item \textbf
-                     {Why pooling?} \\ <./figures/math_con.png (PNG copy)>]
+l.65 \newpage
+              <./figures/arch_vis_training.png (PNG copy)> <./figures/arch_vis.png (PNG copy)>]
+<figures/math_con.png, id=121, 221.35846pt x 136.00812pt>
+File: figures/math_con.png Graphic file (type png)
+<use figures/math_con.png>
+Package pdftex.def Info: figures/math_con.png  used on input line 88.
+(pdftex.def)             Requested size: 172.5pt x 105.99458pt.
+
+
+[4
+pdfTeX warning (ext4): destination with the same identifier (name{figure.3}) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.94 
+      <./figures/math_con.png (PNG copy)>]
 
 [5]
 
-[6] (./project.aux)
+[6]
+
+[7]
+
+[8] (./project.aux)
  ***********
 LaTeX2e <2024-06-01> patch level 2
 L3 programming layer <2024-08-30>
  ***********
+
+
+LaTeX Warning: There were multiply-defined labels.
+
 Package rerunfilecheck Info: File `project.out' has not changed.
-(rerunfilecheck)             Checksum: 35064824222B65DC04981325372560D1;1810.
+(rerunfilecheck)             Checksum: 20BE17B10B197DF9292704CD3929AA38;2397.
  ) 
 Here is how much of TeX's memory you used:
- 10988 strings out of 473579
- 169333 string characters out of 5728234
- 564910 words of memory out of 5000000
- 33724 multiletter control sequences out of 15000+600000
+ 11015 strings out of 473579
+ 169952 string characters out of 5728234
+ 565976 words of memory out of 5000000
+ 33741 multiletter control sequences out of 15000+600000
  567306 words of font info for 71 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 75i,12n,79p,467b,569s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 75i,12n,79p,467b,565s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsl10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/cm-super/sfbx1000.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb>
-Output written on project.pdf (6 pages, 232994 bytes).
+Output written on project.pdf (8 pages, 253520 bytes).
 PDF statistics:
- 199 PDF objects out of 1000 (max. 8388607)
- 155 compressed objects within 2 object streams
- 27 named destinations out of 1000 (max. 500000)
- 123 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 238 PDF objects out of 1000 (max. 8388607)
+ 191 compressed objects within 2 object streams
+ 37 named destinations out of 1000 (max. 500000)
+ 160 words of extra memory for PDF output out of 10000 (max. 10000000)
 
