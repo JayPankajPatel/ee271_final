@@ -4,9 +4,9 @@ from softmax import Softmax
 import numpy as np
 import tensorflow as tf
 
-conv = Conv3x3(8)
+conv = Conv3x3(8, filters=np.load("./Train/filters_fixed.npy"))
 pool = MaxPool2x2()
-softmax = Softmax(13 * 13 * 8, 10)
+softmax = Softmax(13 * 13 * 8, 10, weights=np.load("./Train/weights_fixed.npy"), biases=np.load("./Train/biases_fixed.npy"))
 
 mnist = tf.keras.datasets.mnist.load_data()
 (test_images, test_labels), (_, _) = mnist

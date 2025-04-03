@@ -99,8 +99,8 @@ print("Test Loss:", loss / num_tests)
 print("Test Accuracy:", num_correct / num_tests)
 
 
-def quantize(arr, scale=256):
-    return (arr * scale).astype(np.int16)  # Convert to int16 (Q8.8 format)
+#def quantize(arr, scale=256):
+#    return (arr * scale).astype(np.int16)  # Convert to int16 (Q8.8 format)
 
 
 np.save("filters_fixed", conv.filters)

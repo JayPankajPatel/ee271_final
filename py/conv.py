@@ -13,11 +13,9 @@ import numpy as np
 
 
 class Conv3x3:
-    def __init__(self, num_filters, filters=None):
+    def __init__(self, num_filters, filters):
         self.num_filters = num_filters
-        if filters == None:
-            # Randomly initialize filters (shape: num_filters x 3 x 3)
-            self.filters = np.random.randn(num_filters, 3, 3)
+        self.filters = filters  
 
     def extract_regions(self, image):
         """
