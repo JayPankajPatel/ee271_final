@@ -103,6 +103,6 @@ def quantize(arr, scale=256):
     return (arr * scale).astype(np.int16)  # Convert to int16 (Q8.8 format)
 
 
-np.savetxt("filters_fixed.txt", quantize(conv.filters), fmt="%d")
-np.savetxt("weights_fixed.txt", quantize(softmax.weights), fmt="%d")
-np.savetxt("biases_fixed.txt", quantize(softmax.biases), fmt="%d")
+np.save("filters_fixed", conv.filters)
+np.save("weights_fixed", softmax.weights)
+np.save("biases_fixed", softmax.biases)
