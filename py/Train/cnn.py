@@ -85,6 +85,11 @@ for epoch in range(3):
         loss += l
         num_correct += acc
 
+print("Softmax weights mean:", softmax.weights.mean())
+print("Conv filters mean:", conv.filters.mean())
+
+
+np.save("filters", conv.filters)
 # Test the CNN
 print("\n--- Testing the CNN ---")
 loss = 0
@@ -99,10 +104,6 @@ print("Test Loss:", loss / num_tests)
 print("Test Accuracy:", num_correct / num_tests)
 
 
-#def quantize(arr, scale=256):
-#    return (arr * scale).astype(np.int16)  # Convert to int16 (Q8.8 format)
-
-
-np.save("filters_fixed", conv.filters)
-np.save("weights_fixed", softmax.weights)
-np.save("biases_fixed", softmax.biases)
+np.save("filters", conv.filters)
+np.save("weights", softmax.weights)
+np.save("biases", softmax.biases)

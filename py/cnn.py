@@ -1,15 +1,25 @@
-from conv import Conv3x3
-from max_pool import MaxPool2x2
-from softmax import Softmax
 import numpy as np
+from conv import Conv3x3
+from maxpool import MaxPool2
+from softmax import Softmax
 import tensorflow as tf
 
-conv = Conv3x3(8, filters=np.load("./Train/filters_fixed.npy"))
-pool = MaxPool2x2()
-softmax = Softmax(13 * 13 * 8, 10, weights=np.load("./Train/weights_fixed.npy"), biases=np.load("./Train/biases_fixed.npy"))
+# The mnist package takes care of handling the MNIST dataset for us!
+# Learn more at https://github.com/datapythonista/mnist
+# We only use the first 1k testing examples (out of 10k total) in the interest of time.
+# Feel free to change this if you want.
 
 mnist = tf.keras.datasets.mnist.load_data()
 (test_images, test_labels), (_, _) = mnist
+
+conv = Conv3x3(8, filters=np.load("./Train/filters.npy"))  # 28x28x1 -> 26x26x8
+pool = MaxPool2()  # 26x26x8 -> 13x13x8
+softmax = Softmax(
+    13 * 13 * 8,
+    10,
+    weights=np.load("./Train/weights.npy"),
+    biases=np.load("./Train/biases.npy"),
+)  # 13x13x8 -> 10
 
 
 def forward(image, label):
