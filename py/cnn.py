@@ -58,5 +58,11 @@ for i, (im, label) in enumerate(zip(test_images, test_labels)):
             "[Step %d] Past 100 steps: Average Loss %.3f | Accuracy: %d%%"
             % (i + 1, loss / 100, num_correct)
         )
+        print("Max Value", conv.max_value)
+        print("Min Value", conv.min_value)
+        print("Max Value: Filters", np.max(conv.filters))
+        print("Min Value: Filters", np.min(conv.filters))
+        print("Max Value: weights", np.max(softmax.weights))
+        print("Min Value: biases", np.min(softmax.biases))
         loss = 0
         num_correct = 0

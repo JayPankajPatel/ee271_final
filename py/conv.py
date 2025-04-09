@@ -17,6 +17,8 @@ class Conv3x3:
         # filters is a 3d array with dimensions (num_filters, 3, 3)
         # We divide by 9 to reduce the variance of our initial values
         self.filters = filters
+        self.max_value = 0
+        self.min_value = 10000000
 
     def iterate_regions(self, image):
         """
@@ -41,5 +43,7 @@ class Conv3x3:
 
         for im_region, i, j in self.iterate_regions(input):
             output[i, j] = np.sum(im_region * self.filters, axis=(1, 2))
+        self.max_value = np.max(output)
+        self.min_value = np.min(output)
 
         return output
