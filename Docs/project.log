@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.9.15)  3 APR 2025 11:28
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.9.15)  9 APR 2025 15:27
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -351,12 +351,12 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 {/usr/local/texlive/2024/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
 
 [2{/usr/local/texlive/2024/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}]
-<figures/arch_vis_training.png, id=113, 363.87692pt x 106.3975pt>
+<figures/arch_vis_training.png, id=158, 363.87692pt x 106.3975pt>
 File: figures/arch_vis_training.png Graphic file (type png)
 <use figures/arch_vis_training.png>
 Package pdftex.def Info: figures/arch_vis_training.png  used on input line 55.
 (pdftex.def)             Requested size: 327.74895pt x 95.83316pt.
-<figures/arch_vis.png, id=114, 261.28384pt x 151.56625pt>
+<figures/arch_vis.png, id=159, 261.28384pt x 151.56625pt>
 File: figures/arch_vis.png Graphic file (type png)
 <use figures/arch_vis.png>
 Package pdftex.def Info: figures/arch_vis.png  used on input line 61.
@@ -374,7 +374,7 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.2}) has
                                                   \__shipout_drop_firstpage_...
 l.65 \newpage
               <./figures/arch_vis_training.png (PNG copy)> <./figures/arch_vis.png (PNG copy)>]
-<figures/math_con.png, id=121, 221.35846pt x 136.00812pt>
+<figures/math_con.png, id=166, 221.35846pt x 136.00812pt>
 File: figures/math_con.png Graphic file (type png)
 <use figures/math_con.png>
 Package pdftex.def Info: figures/math_con.png  used on input line 88.
@@ -394,7 +394,19 @@ l.94
 
 [7]
 
-[8] (./project.aux)
+[8]
+
+[9]
+
+[10]
+
+[11]
+
+[12]
+
+[13]
+
+[14] (./project.aux)
  ***********
 LaTeX2e <2024-06-01> patch level 2
 L3 programming layer <2024-08-30>
@@ -404,21 +416,21 @@ L3 programming layer <2024-08-30>
 LaTeX Warning: There were multiply-defined labels.
 
 Package rerunfilecheck Info: File `project.out' has not changed.
-(rerunfilecheck)             Checksum: 20BE17B10B197DF9292704CD3929AA38;2397.
+(rerunfilecheck)             Checksum: C6BE141AC2FB5F48CBAF3030EB0B4C70;3913.
  ) 
 Here is how much of TeX's memory you used:
- 11015 strings out of 473579
- 169952 string characters out of 5728234
- 565976 words of memory out of 5000000
- 33741 multiletter control sequences out of 15000+600000
- 567306 words of font info for 71 fonts, out of 8000000 for 9000
+ 11064 strings out of 473579
+ 170581 string characters out of 5728234
+ 570990 words of memory out of 5000000
+ 33755 multiletter control sequences out of 15000+600000
+ 568093 words of font info for 74 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 75i,12n,79p,467b,565s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsl10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/cm-super/sfbx1000.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb>
-Output written on project.pdf (8 pages, 253520 bytes).
+ 75i,12n,79p,551b,565s stack positions out of 10000i,1000n,20000p,200000b,200000s
+</usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsl10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/cm-super/sfbx1000.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb>
+Output written on project.pdf (14 pages, 295033 bytes).
 PDF statistics:
- 238 PDF objects out of 1000 (max. 8388607)
- 191 compressed objects within 2 object streams
- 37 named destinations out of 1000 (max. 500000)
- 160 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 336 PDF objects out of 1000 (max. 8388607)
+ 280 compressed objects within 3 object streams
+ 69 named destinations out of 1000 (max. 500000)
+ 232 words of extra memory for PDF output out of 10000 (max. 10000000)
 

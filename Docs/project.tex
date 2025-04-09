@@ -249,8 +249,218 @@ h_i =
 
 \noindent This means the model predicts class 3 with full confidence and disregards the other classes completely.
 
+\section{Hardware Design}
+\subsection{Number Representation}
+\subsubsection{Qm.n format} 
+Q format is a standardized way to represent fractional numbers in hardware. We cannot use floating point as the FPGA we are targeting does not have enough resources to implement a floating point model. In Qm.n format, \emph{m} is the number of bits that will be used to represent the whole number portion of the number. \emph{n} is the number of bits that will be used to represent the fractional portion of the number. Based on the hardware used, it was determined that 16 bits was enough to fit our design on a FPGA.
+\subsection{Fixed-Point Format Selection}
+After running the software model, it was determined that the number range that is present in our system is between \textbf{-3.1 to 3.1}. To represent this in hardware we need to use
+To represent numbers in the range \(-3.1\) to \(+3.1\) using fixed-point arithmetic with a 16-bit word, we select an appropriate Q-format that maximizes precision while avoiding overflow.
+
+\subsubsection*{Bit Allocation}
+
+The 16-bit word must include:
+\begin{itemize}
+  \item 1 sign bit (for two's complement representation)
+  \item \(m\) integer bits
+  \item \(n\) fractional bits
+\end{itemize}
+
+Thus, we must satisfy:
+\[
+1~(\text{sign}) + m~(\text{integer}) + n~(\text{fraction}) = 16
+\]
+
+\subsubsection*{Determining Integer Bits}
+
+To safely represent the maximum magnitude value \(3.1\), we need:
+\[
+2^m > 3.1
+\]
+Solving this, we find:
+\[
+m = 2 \quad \text{since} \quad 2^2 = 4 > 3.1
+\]
+
+\subsubsection*{Fractional Bits}
+
+Given \(m = 2\) and 1 sign bit, the remaining bits for the fractional part are:
+\[
+n = 16 - 1 - 2 = 13
+\]
+
+\subsubsection*{Selected Q Format}
+
+We choose the Q-format:
+\[
+\textbf{Q2.13}
+\]
+
+This format uses:
+\begin{itemize}
+  \item 1 sign bit
+  \item 2 integer bits
+  \item 13 fractional bits
+\end{itemize}
+
+\subsubsection*{Representable Range and Precision}
+
+The Q2.13 format can represent values in the approximate range:
+\[
+[-2^2, 2^2 - 2^{-13}] = [-4, 3.99987793]
+\]
+
+The smallest positive value (resolution) is:
+\[
+2^{-13} \approx 0.00012207
+\]
+
+This ensures that values within \([-3.1, +3.1]\) can be accurately represented without overflow, with high fractional precision.
+\subsection{Multiply Accumulate (MAC) Unit}
+
+In Convolutional Neural Networks (CNNs), the majority of computations come from convolution and fully connected layers. These layers apply a large number of dot products between learned filters (weights) and input data. Each dot product is computed through a series of \textbf{multiply-accumulate (MAC)} operations, which follow the form:
+
+\[
+\text{MAC: } a \times b + c
+\]
+
+where $a$ is a weight, $b$ is an input value, and $c$ is the accumulation result (running sum).
+
+\subsubsection*{Fixed-Point Constraints in MAC Design}
+
+When using fixed-point numbers—such as the Q2.13 format, where 16-bit signed integers represent values in the range $[-4.0, 3.9998]$—the MAC unit must handle several constraints:
+
+\subsubsection{Saturation Handling} 
+Without saturation, any arithmetic overflow may wrap around due to two's complement behavior. For instance, a small positive overflow can produce a large negative result, leading to incorrect predictions. Saturation logic ensures that results exceeding the representable range are clamped to the maximum or minimum:
+
+\begin{verbatim}
+if (result > MAX_Q213)
+    output = MAX_Q213;
+else if (result < MIN_Q213)
+    output = MIN_Q213;
+else
+    output = result;
+\end{verbatim}
+
+\paragraph{Truncation and Rescaling} Multiplying two Q2.13 values produces a Q4.26 intermediate result:
+
+\[
+Q2.13 \times Q2.13 = Q4.26
+\]
+
+To convert this back to Q2.13, the result must be truncated by shifting 13 bits to the right:
+
+\begin{verbatim}
+wire signed [31:0] full_product = a * b;
+wire signed [15:0] scaled_product = full_product >>> 13;
+\end{verbatim}
+
+This truncation maintains numerical scale and fits the result into 16 bits.
+
+\subsubsection*{Example 1: Convolution Filter on MNIST Input}
+
+For an 8-filter $3 \times 3$ convolution on a $28 \times 28$ grayscale MNIST image, each output pixel requires:
+
+\[
+\sum_{i=1}^{9} w_i \cdot x_i
+\]
+
+This results in $9 \times 26 \times 26 \times 8 = 48,672$ MAC operations per image in the first layer. Fixed-point MAC units allow this to be computed efficiently using parallelism and pipelining.
+
+\subsubsection*{Example 2: Fully Connected Output Layer}
+
+In a final dense layer mapping to 10 output classes, with 1352 inputs (e.g., $13 \times 13 \times 8$), the number of MACs is:
+
+\[
+1352 \times 10 = 13,520
+\]
+
+All these operations must respect Q2.13 truncation and saturation constraints to ensure valid inference results.
+
+\subsubsection*{Summary}
+
+CNN inference relies heavily on MAC operations. Fixed-point formats like Q2.13 are ideal for resource-constrained hardware platforms. Proper MAC unit design must include:
+
+\begin{itemize}
+    \item \textbf{Saturation logic} to prevent overflow wraparound
+    \item \textbf{Truncation logic} to maintain fixed-point scale
+\end{itemize}
+
+\subsection{Bus Design}
+\subsubsection{Component Interface: AXI-Stream}
+\textbf{AXI-Stream} is a lightweight and high-throughput unidirectional data transfer protocol derived from the Advanced eXtensible Interface (AXI) family. AXI-Stream is designed purely for streaming data between components, making it ideal for our application.
+
+\subsubsection*{Core Principles}
+
+AXI-Stream operates on a simple handshake mechanism using a few key signals:
+
+\begin{itemize}
+  \item \texttt{TVALID} – Indicates that the source has valid data on the \texttt{TDATA} bus.
+  \item \texttt{TREADY} – Indicates that the destination is ready to receive data.
+  \item \texttt{TDATA} – Carries the actual data payload (width is configurable).
+  \item \texttt{TLAST} (optional) – Marks the last word of a frame (used in packetized streams).
+  \item \texttt{TKEEP} (optional) – Marks which bytes in \texttt{TDATA} are valid (useful in wide transfers).
+\end{itemize}
+
+A data transfer occurs only when both \texttt{TVALID} and \texttt{TREADY} are asserted in the same cycle. This makes AXI-Stream inherently backpressure-aware — downstream modules can control data flow by deasserting \texttt{TREADY}.
+
+\subsubsection*{Basic Example}
+
+Our CNN inference has a MAC unit connected to a maxpool unit, followed by a hardmax unit. Using AXI-Stream, each block only needs to manage data flow via the handshake:
+
+\begin{verbatim}
+MAC ---> maxpool ---> hardmax
+ AXI-Stream     AXI-Stream     AXI-Stream
+\end{verbatim}
+
+Each unit asserts \texttt{TVALID} when data is ready and waits for the next unit to assert \texttt{TREADY} before proceeding. This decouples timing between stages and allows for easy optimization and debugging.
+
+\subsection{Memory Interface: AXI}
+\subsubsection*{DDR Memory Access with AXI and MIG}
+
+The limited on-chip memory (BRAM) is not sufficient to store all weights, intermediate feature maps, or input datasets. To overcome this, off-chip memory such as DDR SDRAM is used as it offers larger storage.
+
+\subsubsection*{Interfacing with DDR via AXI}
+
+In Xilinx FPGA designs, DDR memory is typically interfaced through an AXI-based interface using a memory controller. The AXI interface allows the logic on the FPGA fabric to read and write to DDR memory in a standardized way. Most processing cores, DMA engines, and data movers in a system are designed to communicate over AXI.
+
+\textbf{AXI4 (Memory-Mapped)} is the specific AXI protocol used for this purpose. It supports:
+\begin{itemize}
+  \item \textbf{Burst transfers} for high-throughput access
+  \item \textbf{Read/write address channels} for flexible access patterns
+  \item \textbf{Byte-level addressing} and full 32- or 64-bit data widths
+\end{itemize}
+
+\subsubsection*{Using the Memory Interface Generator (MIG) IP}
+
+To physically access the external DDR memory on the FPGA board (e.g., Nexys A7), Xilinx provides the \textbf{Memory Interface Generator (MIG)} IP core. MIG handles the low-level DDR protocol and provides a high-speed interface to the FPGA logic.
+
+\begin{itemize}
+  \item MIG is customized for the specific DDR chip and board constraints.
+  \item It generates a user interface that is typically AXI4 or a native interface.
+  \item It abstracts the timing, calibration, and protocol of DDR SDRAM.
+\end{itemize}
+
+In Vivado, MIG can be configured through a GUI where the developer selects:
+\begin{itemize}
+  \item DDR type (e.g., DDR3 for Nexys A7)
+  \item Clocking and timing parameters
+  \item Interface type (AXI or native)
+\end{itemize}
+
+\subsubsection*{Connecting MIG to AXI-Based Systems}
+
+When configured to use the AXI interface, the MIG module exposes AXI master/slave ports that can be connected to AXI interconnects or directly to AXI master peripherals. For example, a DMA engine or custom logic (CNN accelerator) can read weights from DDR using AXI reads and write results using AXI writes.
 
 
+\subsubsection*{Data Movement}
 
+To efficiently move data between DDR and processing blocks, a \textbf{DMA (Direct Memory Access)} engine is often used. AXI DMA connects:
+\begin{itemize}
+  \item One end to AXI4-MM for DDR
+  \item The other end to AXI-Stream for internal processing
+\end{itemize}
+
+This decouples processing from memory latency and enables streaming computation without stalls.
 
 \end{document}
