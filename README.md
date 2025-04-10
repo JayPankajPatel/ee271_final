@@ -13,7 +13,7 @@ The software model of our end goal exists under `./py/cnn.py`
 ### Using the model
 The model uses `pyenv` and `pyenv-virtualenv`to manage python versions and packages.
 #### Installation
-Clone this repository in your desired location, change directories into `py` and run the setup script
+Clone this repository in your desired location, change directories into `py` and run the setup script  
 Note, before running make sure you have the prerequisites for `python` 
 ```
 git clone https://github.com/JayPankajPatel/ee271_final.git
